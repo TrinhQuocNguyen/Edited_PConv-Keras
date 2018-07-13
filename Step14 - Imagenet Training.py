@@ -66,6 +66,35 @@ class DataGenerator(ImageDataGenerator):
             # https://stackoverflow.com/questions/231767/what-does-the-yield-keyword-do
             gc.collect()
             yield [masked, mask], ori
+
+    def flow_from_directory_for_test(self, directory, *args, **kwargs):
+        generator = super().flow_from_directory(directory, class_mode=None, *args, **kwargs)
+        while True:
+            
+            # Get augmentend image samples
+            ori = next(generator)
+
+            # Get masks for each image sample
+            # mask = np.stack([random_mask(ori.shape[1], ori.shape[2]) for _ in range(ori.shape[0])], axis=0)
+            
+            image_mask = cv2.imread("C:/Users/Trinh/Documents/Kaggle/Kaggle-imagenet/input/DET/mask/mask.jpg")
+            image_mask = cv2.resize(image_mask,(640,640))
+            image_mask[image_mask <=128] = 128
+            image_mask[image_mask > 128] = 0
+            image_mask[image_mask > 0] = 255
+            
+            
+            mask = np.stack([image_mask for _ in range(ori.shape[0])], axis=0)
+
+            # Apply masks to all image sample
+            masked = deepcopy(ori)
+            masked[mask==0] = 1
+
+            # Yield ([ori, masl],  ori) training batches
+            # print(masked.shape, ori.shape)
+            gc.collect()
+            yield [masked, mask], ori
+            
             
 # Create training generator
 train_datagen = DataGenerator(  

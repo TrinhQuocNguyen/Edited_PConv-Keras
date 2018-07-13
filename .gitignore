@@ -107,3 +107,9 @@ test_samples*
 logs*
 backup*
 pexels_royalty_free_photos*
+
+# Trinh Quoc Nguyen
+qd_imd*
+qd_imd.tar.gz
+.idea*
+.vscode*
