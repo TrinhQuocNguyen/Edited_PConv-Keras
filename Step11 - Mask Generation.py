@@ -37,7 +37,7 @@ axes = list(itertools.chain.from_iterable(axes))
 for i in range(len(axes)):
     
     # Generate image
-    img = random_mask(500, 500)
+    img = random_mask(512, 512)
     
     # Plot image on axis
     axes[i].imshow(img*255)
