@@ -55,7 +55,7 @@ def count_nonblack_np(img):
     percent = nonblack/ (img.shape[0]*img.shape[1]) * 100
     return percent
 
-def random_mask_rectangles(height, width, channels=3, percent_from=10., percent_to=20., only_rec = True):
+def random_mask_rectangles(height, width, channels=3, percent_from=10., percent_to=20., only_rec = True, short_rec= False):
     """Generate the random mask based on percentage of the entire image
     
     Arguments:
@@ -78,7 +78,11 @@ def random_mask_rectangles(height, width, channels=3, percent_from=10., percent_
             y1, y2 = randint(1, height), randint(1, height)
             # thickness = randint(3, size)
             thickness = -1
-            cv2.rectangle(img, (x1,y1), (x2,y2), (1,1,1), thickness)     
+            if short_rec == True:
+                if (-width/3 < (x1 - x2) < width/3) and -height/3 < (y1 - y2) < height/3:
+                    cv2.rectangle(img, (x1,y1), (x2,y2), (1,1,1), thickness) 
+            else:
+                cv2.rectangle(img, (x1,y1), (x2,y2), (1,1,1), thickness)     
         
         if (only_rec != True):   
             # Set size scale
@@ -100,7 +104,7 @@ def random_mask_rectangles(height, width, channels=3, percent_from=10., percent_
                 cv2.circle(img,(x1,y1),radius,(1,1,1), -1)
                 
             # Draw random ellipses
-            for _ in range(randint(1, 10)):
+            for _ in range(randint(1, 15)):
                 x1, y1 = randint(1, width), randint(1, height)
                 s1, s2 = randint(1, width), randint(1, height)
                 a1, a2, a3 = randint(3, 180), randint(3, 180), randint(3, 180)
@@ -108,8 +112,17 @@ def random_mask_rectangles(height, width, channels=3, percent_from=10., percent_
                 cv2.ellipse(img, (x1,y1), (s1,s2), a1, a2, a3,(1,1,1), thickness)
 
 
+
         if (percent_from <= count_nonblack_np(img) < percent_to):
             print ("percent: ", count_nonblack_np(img))
             break
         
     return 1-img
+
+def str2bool(v):
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')

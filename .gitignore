@@ -113,3 +113,7 @@ qd_imd*
 qd_imd.tar.gz
 .idea*
 .vscode*
+
+data/masks/
+data/road/
+
