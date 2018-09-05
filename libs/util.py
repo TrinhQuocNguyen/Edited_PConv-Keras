@@ -120,6 +120,11 @@ def random_mask_rectangles(height, width, channels=3, percent_from=10., percent_
     return 1-img
 
 def str2bool(v):
+    """convert string to bool
+    
+    Arguments:
+        v {string} -- string which describes the bool var
+    """
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif v.lower() in ('no', 'false', 'f', 'n', '0'):

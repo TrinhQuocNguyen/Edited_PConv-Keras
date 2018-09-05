@@ -15,21 +15,26 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('--size', default='512', type=int,
                     help='size of the image')
-parser.add_argument('--folder_path', default='./data/road/GOPR0268_line_broken_02', type=str,
+parser.add_argument('--folder_path', default='./data/road/GOPR0037_taken', type=str,
                     help='The folder path')
+                    
 if __name__ == "__main__":
     
     args = parser.parse_args()
     print(args)
 
-    # Load mask
-    mask = cv2.imread(args.folder_path + "/mask/mask_mask.png")
+    # Load mask: noise = 255 = white
+    mask = cv2.imread(args.folder_path + "/mask/mask.jpg")
+    mask = cv2.resize(mask, (args.size,args.size))
+    cv2.imshow("mask", mask)
+
     # process mask
     image_mask = deepcopy(mask)
     image_mask[image_mask <=128] = 128
     image_mask[image_mask > 128] = 0
     image_mask[image_mask > 0] = 255
-    cv2.imwrite(args.folder_path + "/mask/" + "mask.jpg", image_mask)
+    
+    # cv2.imwrite(args.folder_path + "/mask/" + "mask.jpg", image_mask)
 
     # prcocess images
     img_paths = os.listdir(args.folder_path + "/origin")
@@ -41,13 +46,14 @@ if __name__ == "__main__":
 
         # Image + mask
         masked_img = deepcopy(img)
-        masked_img[mask==0] = 255
+        # masked_img[mask==0] = 255 # if noise = 0 = black
+        masked_img[image_mask==0] = 255 # if noise = 255 = white
 
         # cv2.imshow("image", mask*255)
         # cv2.imshow("img", img)
 
-        # cv2.imshow("masked_img", masked_img)
-        # cv2.waitKey(0)
+        cv2.imshow("masked_img", masked_img)
+        cv2.waitKey(3)
         cv2.imwrite(args.folder_path + "/input/" + img_path, masked_img)
 
 
